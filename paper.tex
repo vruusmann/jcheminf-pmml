@@ -2,7 +2,7 @@
 \usepackage{fullpage, times}
 \usepackage{ctable}
 \begin{document}
-\title{Deploying and Sharing QSAR Models using Predictive Model Markup Language}
+\title{Deploying and Sharing QSAR Models using Predictive Modeling Markup Language}
 \author{Villu Ruusmann${}^{\dagger}$ and Rajarshi Guha${}^{\ddagger}$\\
 ${}^{\ddagger}$National Center for Advancing Translational Sciences\\ 9800 Medical Center Drive  Rockville, MD 20850 \\ \\
 ${}^{\dagger}$Your address }
@@ -52,6 +52,36 @@ the user to directly work with the original model itself. An important
 downside was that the model itself did not contain explicit references
 to the descriptors that were required as input. 
 
+Bioclipse
+
+\subsection{Serializing Models}
+\label{sec:serializing-models}
+
+A key step in sharing predictive models is serialization. That is,
+converting the internal representation of the model developed in some
+environment (R, Weka, Matlab, Mathematica etc) to a disk file (usually
+a sequence of bytes). Not all deployment approaches require this step
+- usually platforms that host the deployment and development
+mechanisms (e.g., Pipeline Pilot, R using Shiny [REF]). But in general, for one to share a
+model, it must be serialized and the serialized form is exchanged.
+
+Most model development platforms support binary serialization
+schemes. For example, R can save models in the RData format [REF]
+which is binary and can only be read by the R platform (though since
+it is Open Source, one could read/write such files using custom
+code). XXX What about Matlab? XXX Java objects (say from Weka) can
+be serialized using the Java Object Protocol [REF http://docs.oracle.com/javase/7/docs/technotes/guides/serialization/]
+
+In contrast to binary serialization formats, the Predictive Modeling
+Markup Language is a plain text XML format that is designed to fully
+describe the model. Importantly, with appropriate software a PMML
+document can be used to reconstruct the model, including any data
+preprocessing steps (scaling, normalization) as well as generate input
+descriptors if appropriately specified. A number of software tools are
+capable of reading and writing PMML documents including SAS, SPSS,
+TIBCO and KNIME, whereas others such as R can produce PMML documents
+and WEKA which can consume PMML documents.
+
 
 \ctable[cap={}, caption={Growth in number of Pubmed articles that use the term QSAR.},
 label={fig:count-qsar},figure,botcap]
@@ -67,6 +97,13 @@ label={fig:count-qsar},figure,botcap]
 \subsection{Model Development}
 \label{sec:model-development}
 
+For this study we developed models in R 3.1 [REF] with descriptors
+generated using the CDK [REF] via the rcdk [REF] package. As exemplars
+we considered two datasets. XXX Describe the datasets.
+
+Next we developed a linear regression (or classification) and random
+forest  model  for each dataset. Using the pmml package [REF] we
+serialized the models to PMML.
 
 \subsection{Model Deployment}
 \label{sec:model-deployment}
@@ -74,6 +111,11 @@ label={fig:count-qsar},figure,botcap]
 
 \section{Discussion}
 \label{sec:discussion}
+
+\subsection{PMML Supports Open Science}
+\label{sec:pmml-supports-open}
+
+
 
 
 
