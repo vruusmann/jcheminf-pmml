@@ -54,6 +54,44 @@ to the descriptors that were required as input.
 
 Bioclipse
 
+\subsection{Elements of a predictive solution}
+
+A model represents a standalone mathematical relationship. Not very easy
+to work with from the end user perspective. A model should be packaged
+as a predictive solution, which has the following components:
+\begin{itemize}
+  \item Data schema. Specifies information about input and output fields.
+  Data schema represents the "public interface" for the end user. 
+  For example, data schema could communicate that a predictive solution
+  consumes a single string-type input field that contains the SMILES 
+  representation of a chemical structure, and produces two output fields - 
+  a string-type field that contains the classification result (eg. the 
+  predicted mechanism of toxic action) and a floating point-type field 
+  that contains a class-specific regression result (eg. if the chemical
+  structure was classified as a narcotic agent, the predicted pIGC50 
+  value using the narcosis QSAR model).
+  \item Data pre- and post-processing functions. Typically, the input
+  fields that are listed in data schema cannot be directly fed to the 
+  underlying matchematical relationship "as is". Could be related to 
+  translating input from user representation to internal representation
+  (eg. converting SMILES to CDK molecular graph to CDK descriptor value)
+  or performing additional transformations on it (eg. normalization, 
+  converting from natural scale to logaritmic scale etc.).Similarly,
+  could derive secondary output fields based on the primary field. For
+  example, calculating the probability of the predicted class or standard
+  error of the predicted value.
+  \item Data (work)flows. A predictive solution may encapsulate more
+  than one model. The passage of data from one model to another happens
+  inside the predictive solution. Two most common scenarious is model 
+  aggregation, where the final prediction is calculated by applying an
+  aggregation function over a list of interim predictions (eg. consensus
+  modeling), and model chaining, where the output of earlier models
+  becomes the input of subsequent models (eg. classification followed 
+  by regression).
+\end{itemize}
+
+TODO: A figure of a chemistry-specific predictive solution.
+
 \subsection{Serializing Models}
 \label{sec:serializing-models}
 
