@@ -92,6 +92,43 @@ as a predictive solution, which has the following components:
 
 TODO: A figure of a chemistry-specific predictive solution.
 
+\subsection{The lifecycle of a predictive solution}
+
+A modeling workflow has two clearly distinguishable lifecycle phases:
+\begin{enumerate}
+  \item Training. Happens once in the very beginning. Handled by a data
+  scientist. Typically in desktop environment. 
+  \item Deployment.Happens many times. Handled by plurality of IT 
+  roles/personnel. Typically in server-side environment, different 
+  platforms/runtimes. 
+\end{enumerate}
+
+The training is handled by a scientist. Involves analysing the
+"fundamental side" of the problem, choosing the right statistical 
+algorithms for training and validation. Also, providing the mechanistic
+interpretation of the results (white box models). The result is 
+shared with peers using modern scientific communication means. Provided
+that the result is actually useful, many people may want to deploy it
+on their premises afterwards.
+
+The deployment is an operational IT problem. Different organizations 
+may prefer different platforms, data frameworks. Therefore, the trained
+predictive solution should be maximally portable.
+
+The portability can be best acieved by relying on open and popular
+standards. To a lesser degree, if no standards have been established yet,
+could rely on open and popular tools. For example, CDK is not formally
+backed by a standard, but it is generally very easy to use and integrate
+with different chemistry products, because its source code can be obtained
+and modified easily.
+
+Overall, moving models from training phase to deployment phase is a
+major hurdle in practical data science. It is estimated that in corporate
+environments the average length of a modeling iteration may be as long
+as 16-24 months [private conversation, public ref?]. All approaches that
+can reduce this timespan and associated costs could provide significant
+business value.
+
 \subsection{Serializing Models}
 \label{sec:serializing-models}
 
