@@ -1,5 +1,6 @@
 \documentclass[12pt,letterpaper]{article}
 \usepackage{fullpage, times}
+\usepackage{hyperref}
 \usepackage{ctable}
 \begin{document}
 \title{Deploying and Sharing QSAR Models using Predictive Modeling Markup Language}
@@ -53,6 +54,59 @@ downside was that the model itself did not contain explicit references
 to the descriptors that were required as input. 
 
 Bioclipse
+
+\subsection{Model reproducibility vs. Model reusability}
+
+The main question: if you see a QSAR model in the literature, do you
+want to analyze its mathematical properties, or do you want to apply
+it to your dataset in order to see how it performs?
+
+One of the principles of the scientific method is that the research
+must be repeatable and reproducible. From the QSAR point of view there
+are not much technical obstacles in the way. The biggest concern is
+using proprietary algorithms and software.
+
+Model reproducibility is about marking down the procedure by which
+the model can be derived given the same input data. Theoretical methods
+do not have random error component[?]. Thus, all deviations must be
+explained by systematic errors, which could be related to choosing the
+wrong algorithm, wrong parametrization etc.
+
+Documenting the whole model training and validation process with the
+help of electronic laboratory notebooks. Should include both human and
+machine readable instructions of the process. The latter can be given 
+in the form of an executable script (ie. when executed with appropriate
+input data, produces the model and output data). Plenty of options to
+choose from (open source):
+\begin{itemize}
+  \item knitr \url{http://yihui.name/knitr/}
+  \item Sweave \url{https://www.stat.uni-muenchen.de/~leisch/Sweave/}
+  \item Sage \url{http://www.sagemath.org/}
+  \item IPython \url{http://ipython.org/}
+\end{itemize}
+
+The ONS approach is to use Wiki pages, which contain embedded R code
+and plots. For example, see
+\url{http://onschallenge.wikispaces.com/MeltingPointModel002}.
+
+Most of the time, however, the reader in interested in the \emph{final
+ending state} of the modeling workflow. That is, the mathematical 
+relationship that has been properly validated and whose applicability 
+domain has been sufficiently characterized.
+
+Essentially, the representation of a model training process boils down
+to representing the training algorithm. The most complete representation
+is in application code such as R, Python, MATLAB etc.
+The algorithm "works" by applying a finite list of well-defined 
+instructions to the initial state. After applying each instruction the
+system reaches another state. When the list of instructions has been
+exhausted the system has reached its final ending state.
+The representation of states is technically much more challenging than 
+the representation of algorithms. A state may consist of different
+parts. We are only interested in that part, which relates to the 
+mathematical relationship. A state can be preserved by taking a snapshot
+of the particular memory area. To make reading and writing more easier,
+should be formalized as a data structure.
 
 \subsection{Elements of a predictive solution}
 
