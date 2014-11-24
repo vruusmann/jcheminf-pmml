@@ -108,6 +108,27 @@ mathematical relationship. A state can be preserved by taking a snapshot
 of the particular memory area. To make reading and writing more easier,
 should be formalized as a data structure.
 
+The initial state is about the dataset. The first instructions of the
+algorithm will typically split it into training and validation subsets.
+A dataset can be represented using text-based database data formats such
+as Comma-Separated Values (CSV), Attribute-Relation File Format (ARFF)
+and others. Often becomes necessary to incorporate domain-specific
+information. For QSAR, the main need is to provide the description of
+the dependent field (a physicochemical property or biological activity)
+and independent fields (theoretical molecular descriptors). The goal is
+that if the dataset file should be "self-sustainable" if circulated
+between parties. An XML-based dataset markup language called QSAR-ML [ref?].
+
+The QsarDB approach [ref?] attempts to capture the initial state, the 
+final ending state and all states inbetween using a collection of files
+in open and standard data formats. For example, datasets are represented
+in TSV, parameter units in UCUM [ref?], bibliography in BibTeX [ref?], 
+mathematical relationships in PMML etc. QsarDB leaves the door open
+for extension information is user-defined data formats. For example, a
+QsarDB archive may capture the primary model object that corresponds to 
+the "main" run, as well as all secondary model objects that correspond to 
+validation runs.
+
 \subsection{Elements of a predictive solution}
 
 A model represents a standalone mathematical relationship. Not very easy
