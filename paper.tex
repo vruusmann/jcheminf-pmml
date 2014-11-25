@@ -204,6 +204,79 @@ as 16-24 months [private conversation, public ref?]. All approaches that
 can reduce this timespan and associated costs could provide significant
 business value.
 
+\subsection{Representation of models}
+
+It is possible to distinguish between three levels:
+\begin{itemize}
+  \item Data structure. Tied to a specific library and/or algorithm.
+  For example, the \textit{randomForest} R library returns the trained
+  RF model as a special-purpose data structure. Moreover, the internal
+  structure of this data structure varies depending on whether the RF
+  model was trained using the "formula interface" or the "matrix interface".
+  Such data structures can be easily persisted into files using so-called
+  serialization mechanisms. The storing operation (ie. saving the in-memory
+  data structure to disk file) is called serialization, and the loading
+  operation (ie. reading the disk file data structure to memory) is called
+  deserialization. Most language runtimes provide built-in serialization
+  capabilities. For example, R language provides methods \textit{saveRDS}
+  and \textit{readRDS} that can work with binary and text-based files.
+  \item Pseudocode. A similar model can be trained using different libraries
+  and/or algorithms. For example, a RF model can also be trained using
+  the \textit{party} R library (or in-house R library). The choice of the
+  algorithm determines how the search is conducted in the feature space. 
+  However, the final ending state of a RF training process is an ensemble
+  of decision tree models.
+  The goal of the pseudocode representation is to extract and encapsulate
+  the primary structure of the model. The pseudocode representation aims 
+  to be much more informative for humans (eg. following the computation
+  path from beginning to end), but still be directly interpretable by 
+  machines. For example, a decision tree model could be represented by
+  a tree-like data structure, where non-leaf nodes specify split criteria 
+  and leaf nodes specify predicted scores.
+  \item Application code. During deployment, the model is executed with
+  with new input data. With data structure and pseudocode approaches this 
+  is accomplished by model interpretation. The alternative approach is to
+  translate either representation to application code, which would allow
+  for more optimizations and much speedier execution. 
+\end{itemize}
+
+Binary serialization mechanisms are typically much more performant and 
+compact than text serialization. The only downside, which is rather minor,
+is that binary files are hard to open and handle without special tools.
+With text files it is possible to take a peek and possibly even make minor
+modifications.
+
+The choice of serialization data format depends whether model producer 
+and model consumer will be using the same language platform or not. For
+example, the RDS data format that is default for R language is not very
+suitable when model consumer is a Java or Python application. Today,
+there are plenty multi-platform serialization data formats that offer
+bindings for most popular programming languages:
+\begin{itemize}
+  \item Protocol Buffers \url{https://code.google.com/p/protobuf/}
+  \item Apache Avro \url{http://avro.apache.org/}
+  \item XML
+  \item JSON
+  \item YAML
+\end{itemize}
+
+The first step towards pseudocode would be to have shared data structures.
+For example, from the model deployment perspective it would be desirable
+if the \textit{randomForest} and \textit{party} libraries were using common
+data structure for the representation of decision trees. In practice,
+however, it is pretty difficult to accomplish it without a third-party 
+standardizing body. The responsibilities of such third party would be 
+then to specify, develop and maintain an independent library that could
+be imported on demand. The key issue is obtaining acceptance and support
+by major tool vendors in the field. Moreover, this library of "common 
+data structures" does not have to be limited to one specific language, but
+be applicable across all platforms and languages that are used for
+everyday statistics and machine learning work.
+
+The predictive analytics community has decided to standardize around
+the Predictive Model Markup Language (PMML) [ref?], which is an XML-based
+markup language for the representation of predictive solutions. 
+
 \subsection{Serializing Models}
 \label{sec:serializing-models}
 
