@@ -305,7 +305,6 @@ capable of reading and writing PMML documents including SAS, SPSS,
 TIBCO and KNIME, whereas others such as R can produce PMML documents
 and WEKA which can consume PMML documents.
 
-
 \ctable[cap={}, caption={Growth in number of Pubmed articles that use the term QSAR.},
 label={fig:count-qsar},figure,botcap]
 {c}
@@ -313,6 +312,83 @@ label={fig:count-qsar},figure,botcap]
 {
   \includegraphics{img/count-qsar}
 }
+
+\subsection{Representation of descriptors}
+
+A molecular descriptor is a characteristic that is obtained by applying
+a particular algorithm to a particular chemical structure representation.
+Typically classified by the complexity of structure representation:
+\begin{enumerate}
+  \item 1D. Atom counts.
+  \item 2D. Atom connectivity.
+  \item 3D. Atom locations.
+\end{enumerate}
+
+Making descriptor calculation reproducible is difficult because it is
+very tightly coupled with the preparation of chemical compounds to a suitable
+chemical structure representation. For example, consider a simplest 2D
+molecular descriptor that simply counts the number of aromcatic carbon
+atoms. The functional definition of aromaticity is still a matter of 
+ongoing debate -- classical organic chemistry interpretation (Hückel rule) 
+vs. modern theoretical/computational interpretation.
+
+By definition, when the algorithm is applied to an incorrect chemical
+structure representation, the results is an incorrect molecular descriptor
+value. Cannot reliably say if an user-specified representation is correct
+or not by merely "looking" at it. Will need to apply a rigorous verification
+procedure. For example, suppose SMILES chemical structure representation.
+There exist different variations of SMILES, some of which make aromaticy
+transparent by using different atom and bond symbols (ie. lowercase letter "c" 
+and/or carbons connected by ":" bonds). Therefore, simple analysis of SMILES
+using simple text analysis functions won't suffice, and it has to be parsed 
+and reconstructed into more sophisticated chemical graph. Even then it is
+possible to run into trouble, because the ring detection and ring aromaticity
+assignment can be performed following different algorithms.
+
+When "interfacing" QSAR models with actual end-users then it is necessary
+to specify supported input chemical structure representations. Most likely,
+actual chemical databases contain chemical compounds in data formats that
+cannot be fed \emph{directly} to the molecular descriptor calculation
+algorithm. For example, when testing with new chemical compounds then user
+input may originate from graphical drawing board (eg. JMol applet [ref?] or 
+J(S)ME Java(Script) Molecular Editor applet [ref?]) or be a systematic
+name. The desirable property of a QSAR predictive solution would be to
+recognize and automatically convert between different chemical structure
+representations.
+
+Unlike model training algorithm, the molecular descriptor calculation
+algorithm does not have intermediary reusable states. From the practical
+point of view, can be only reused by providing the complete algorithm in 
+the application code form.
+
+There have been attempts to "simplify" the systematizing and communicating 
+algorithms using the ontology approach. The earliest work is the Blue Obelisk
+Descriptor Ontology [ref?], which has been now superseded by the Chemical 
+Information (CHEMINF) Ontology [ref?]. Unfortunately, not much adoption, 
+because the vocabulary of real-life algorithms is way beyond the standardized
+vocabularies, and the lack of competing implementations. An ontology that
+has been crafted following CDK data structures and concepts is unlikely to
+be relevant and useful for other descriptor calculation software. In other
+words, if there is an one-to-one correspondence between ontology identifiers
+and CDK implementation classes, then it may be a better idea to give those
+CDK class names directly, and avoid the intermediary layers of "ontology 
+identifiers" altogether.
+
+The futility of formalizing algorithms using the ontology approach is
+well demonstrated by the "parametrization problem". The behaviour of most
+algorithms can be tweaked by adjusting a set of control variables. For 
+example, when performing the analysis of 3D molecular shapes, finding the 
+optimum between accuracy and speed (eg. mesh size). A different
+parametrization will likely result in different calculated molecular
+descriptor values. Cannot have repeatable nor less reproducible science
+when the exact parametrization is unavailable. The only way to address
+this problem would be to extend the algorithm ontology with this extra
+information, but that would limit its relevancy and usefulness even more.
+
+Another source of "variance" for molecular descriptor algorithms are 
+programming errors. It is possible that newer versions of the same software 
+could yield different results than older versions, because the algorithm
+has been slightly changed (or reparameterized) in some point in time.
 
 \section{Methods}
 \label{sec:methods}
