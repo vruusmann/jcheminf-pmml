@@ -426,6 +426,45 @@ reparameterized) in some point in time.
 \section{Methods}
 \label{sec:methods}
 
+\subsection{PMML export}
+
+Completeness of QSAR predictive solutions:
+\begin{enumerate}
+  \item A model, without any extras. The default option for many popular 
+  statistics applications (eg. the result of a "Save Model As ..."
+  command). Model input and output fields are underspecified, typically
+  limited only to the symbolic name of the field.
+  Very hard for end users to work with. If the training dataset is available,
+  could be even worthwhile to re-train the model (possibly using more PMML
+  capable application) and export the result with more (meta-)information so that
+  it would qualify for the second or thrid level (see below). 
+  \item A model or a model ensemble, with basic data schema, basic data pre- 
+  and post-processing. Selected statistics applications such as R and KNIME
+  provide facilities for specifying data pre- and post-processing functions
+  using PMML transformations (\url{http://www.dmg.org/v4-2-1/Transformations.html}).
+  Today, KNIME can be considered to be the most powerful statistics 
+  application for generating custom PMML documents. For example, KNIME version
+  2.9 and newer provide graphical editor for assembling workflows that produce
+  model ensembles.
+  Can be deployed by at least moderately tech-savvy end users. The biggest
+  challenge is connecting the solution to the actual data source. For example,
+  if the model was trained in R using a data.frame of CDK descriptors, then
+  the end-user must be able to calculate CDK descriptor values for the
+  "incoming" chemical compounds.
+  \item An "interaction" of models, with advanced data schema, data pre- 
+  and post-processing. The PMML document is produced programmatically by
+  custom software application. Could use a "template" approach, where the base
+  of a PMML document is hand-crafted, and model placeholder elements are
+  subsituted with fragment PMML documents that are produced by ordinary
+  statistics applications. The practical experience of one of the authors (VR)
+  suggests that the template approach is easy to set up and maintain even
+  if the overall familiarity with PMML in the organization is not that high.
+  Another customization object is reshaping the data schema of a predictive
+  solution to expected end-user needs. Moving re-defining the input fields
+  so that it becomes possible of inputting a single SMILES string instead of
+  50+ CDK descriptor values.
+\end{enumerate}
+
 \subsection{Model Development}
 \label{sec:model-development}
 
@@ -443,6 +482,9 @@ serialized the models to PMML.
 
 \section{Discussion}
 \label{sec:discussion}
+
+\subsection{PMML Supports Open Science}
+\label{sec:pmml-supports-open}
 
 Putting the previous and current work of the ONS team in perspective.
 The analysis could be based on the Melting Point dataset \url{http://onswebservices.wikispaces.com/meltingpoint}, which has practical 
@@ -501,11 +543,6 @@ for ChemSpider Identifiers (CSIDs). When given a CSID as input, then an ONS
 webservice first resolves to an appropriate 2D representation by performing a
 query against ChemSpider database. In the future, would be equally useful to 
 support IUPAC systematic names. 
-
-\subsection{PMML Supports Open Science}
-\label{sec:pmml-supports-open}
-
-
 
 \bibliography{paper}
 
