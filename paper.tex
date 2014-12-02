@@ -2,6 +2,14 @@
 \usepackage{fullpage, times}
 \usepackage{hyperref}
 \usepackage{ctable}
+
+%% margin notes - comment out before submission
+\usepackage{marginnote}
+\usepackage[top=2.54cm, bottom=2.54cm, outer=5cm, inner=1.25cm, heightrounded, marginparwidth=4cm, marginparsep=0.25in]{geometry}
+\renewcommand*{\marginfont}{\color{red}\small}
+
+\bibliographystyle{jcics}
+
 \begin{document}
 \title{Deploying and Sharing QSAR Models using Predictive Modeling Markup Language}
 \author{Villu Ruusmann${}^{\dagger}$ and Rajarshi Guha${}^{\ddagger}$\\
@@ -21,7 +29,8 @@ ubiquitous in computational chemistry and cheminformatics, having been
 built for a variety of endpoints including biological activities and
 physical properties. As shown in Figure \ref{fig:count-qsar} the last
 15 years has seen a significant increase in publications developing or
-using QSAR models. While there has been much discussion (REFS) on the
+using QSAR models. While there has been much discussion
+\cite{Cherkasov:2014yq,Cramer2011Inevitable,Tropsha:2003aa} on the
 prospective utility and validity of predictive QSAR models, a key
 bottleneck to their assessment is the fact that they are not easily
 obtainable. That is, the bulk of QSAR models are described in a
@@ -31,35 +40,34 @@ reader to actually obtain the descriptor values, obtain and set up the
 modeling environment and then actually rebuild the model. In other
 words, the actual model that was developed by the authors is, usually,
 not available to be used directly. In a few cases, the model may be
-built in a pipeline tool [REF], which alleviates this problem to some
-extent. Furthermore, the model development workflow usually involves
-multiple software tools, each one of a specific version. Without
-access to the exact same version of these tools, a user cannot be
-guaranteed to exactly reproduce the model that the authors
-describe. The issue of reproducibility (of workflows and results) has
-become increasingly important [REF Greg Landrum] in the computational
-arena.
+built in a pipeline tool \cite{KNIME:2008aa}, which alleviates this
+problem to some extent. Furthermore, the model development workflow
+usually involves multiple software tools, each one of a specific
+version. Without access to the exact same version of these tools, a
+user cannot be guaranteed to exactly reproduce the model that the
+authors describe. The issue of reproducibility (of workflows and
+results) has become increasingly important \cite{Landrum:2012hl,
+  Stodden:2013gd,Lane:2003fe} in the computational arena.
 
 A number of workers have described infrastructure to deploy predictive
 models. Some platforms such as Pipeline Pilot provide a easy to use
 method to deploy a complete pipeline as a web page. However, this
 approach does not allow one to share models with users who do not have
-access to the software. Guha [REF] described a web based
+access to the software. Guha \cite{Guha:2007af} described a web based
 infrastructure that allowed one to deploy serialized models developed
 in R. This architecture allowed one to distribute the model via a web
 page, allowing users to provide new input and retrieve
-predictions. But by virtue of using serialized R models, it allowed
-the user to directly work with the original model itself. An important
-downside was that the model itself did not contain explicit references
-to the descriptors that were required as input. 
+predictions. While this solution allowed the deployment of models,
+they were not actually reproducible, since the serialized model did
+not actually reference the input descriptors.
 
 Bioclipse
 
 \subsection{Model reproducibility vs. Model reusability}
 
-The main question: if you see a QSAR model in the literature, do you
-want to analyze its mathematical properties, or do you want to apply
-it to your dataset in order to see how it performs?
+When dealing with a published QSAR model, one must choose whether to
+analyze its mathematical properties, or apply it to a dataset in order
+to see how it performs?
 
 One of the principles of the scientific method is that the research
 must be repeatable and reproducible. From the QSAR point of view there
@@ -87,14 +95,18 @@ choose from (open source):
 
 The ONS approach is to use Wiki pages, which contain embedded R code
 and plots. For example, see
-\url{http://onschallenge.wikispaces.com/MeltingPointModel002}.
+\url{http://onschallenge.wikispaces.com/MeltingPointModel002}. More
+recently, websites such as
+\url{https://rpubs.com/}{https://rpubs.com/} support direct web
+publishing from ones local development environment.
 
 Most of the time, however, the reader in interested in the \emph{final
 ending state} of the modeling workflow. That is, the mathematical 
 relationship that has been properly validated and whose applicability 
-domain has been sufficiently characterized.
+domain has been sufficiently characterized. 
 
-Essentially, the representation of a model training process boils down
+\marginnote{This paragraph reads a bit too abstract. Can it be stated
+  more concisely?}Essentially, the representation of a model training process boils down
 to representing the training algorithm. The most complete representation
 is in application code such as R, Python, MATLAB etc.
 The algorithm "works" by applying a finite list of well-defined 
@@ -119,21 +131,24 @@ and independent fields (theoretical molecular descriptors). The goal is
 that if the dataset file should be "self-sustainable" if circulated
 between parties. An XML-based dataset markup language called QSAR-ML [ref?].
 
-The QsarDB approach [ref?] attempts to capture the initial state, the 
-final ending state and all states inbetween using a collection of files
-in open and standard data formats. For example, datasets are represented
-in TSV, parameter units in UCUM [ref?], bibliography in BibTeX [ref?], 
-mathematical relationships in PMML etc. QsarDB leaves the door open
-for extension information is user-defined data formats. For example, a
-QsarDB archive may capture the primary model object that corresponds to 
-the "main" run, as well as all secondary model objects that correspond to 
+The QsarDB approach \cite{Aruoja:2014bq,Ruusmann:2014uk} attempts to
+capture the initial state, the final ending state and all states
+inbetween using a collection of files in open and standard data
+formats. For example, datasets are represented in TSV, parameter units
+in UCUM [ref?], bibliography in BibTeX [ref?], mathematical
+relationships in PMML etc. QsarDB leaves the door open for extension
+information is user-defined data formats. For example, a QsarDB
+archive may capture the primary model object that corresponds to the
+"main" run, as well as all secondary model objects that correspond to
 validation runs.
 
 \subsection{Elements of a predictive solution}
 
-A model represents a standalone mathematical relationship. Not very easy
-to work with from the end user perspective. A model should be packaged
-as a predictive solution, which has the following components:
+A predictive model represents a standalone mathematical
+relationship. The model itself, in terms of its mathematical form, is
+not particularly easy to work with from the end user perspective. For
+actual usage, a model should be packaged as a predictive solution,
+which has the following components:
 \begin{itemize}
   \item Data schema. Specifies information about input and output fields.
   Data schema represents the "public interface" for the end user. 
@@ -233,18 +248,20 @@ It is possible to distinguish between three levels:
   machines. For example, a decision tree model could be represented by
   a tree-like data structure, where non-leaf nodes specify split criteria 
   and leaf nodes specify predicted scores.
-  \item Application code. During deployment, the model is executed with
+  \item Application code.\marginnote{Its not clear what this level
+      means. Are you making a distinction between 'interpretation' and
+      'compilation'? It seems data structures or pseudocode both end
+      up as application code at one point}During deployment, the model is executed with
   with new input data. With data structure and pseudocode approaches this 
   is accomplished by model interpretation. The alternative approach is to
   translate either representation to application code, which would allow
   for more optimizations and much speedier execution. 
 \end{itemize}
 
-Binary serialization mechanisms are typically much more performant and 
-compact than text serialization. The only downside, which is rather minor,
-is that binary files are hard to open and handle without special tools.
-With text files it is possible to take a peek and possibly even make minor
-modifications.
+Binary serialization mechanisms are usually more performant and 
+compact compared to text based methods. The primary disadvantage is
+that they cannot be manually inspected and require special tools to
+parse and view them.
 
 The choice of serialization data format depends whether model producer 
 and model consumer will be using the same language platform or not. For
@@ -317,78 +334,94 @@ label={fig:count-qsar},figure,botcap]
 
 A molecular descriptor is a characteristic that is obtained by applying
 a particular algorithm to a particular chemical structure representation.
-Typically classified by the complexity of structure representation:
+Typically classified by the complexity of the structure representation:
 \begin{enumerate}
-  \item 1D. Atom counts.
-  \item 2D. Atom connectivity.
-  \item 3D. Atom locations.
+  \item 1D - Atom and bond counts and other constitutional features
+  \item 2D - Atom-atom connectivity
+  \item 3D - Conformation dependent, 3D atom coordinates
 \end{enumerate}
 
-Making descriptor calculation reproducible is difficult because it is
-very tightly coupled with the preparation of chemical compounds to a suitable
-chemical structure representation. For example, consider a simplest 2D
-molecular descriptor that simply counts the number of aromcatic carbon
-atoms. The functional definition of aromaticity is still a matter of 
-ongoing debate -- classical organic chemistry interpretation (Hückel rule) 
-vs. modern theoretical/computational interpretation.
+Descriptor calculations can be difficult to reproduce. This is
+primarily driven by differences in the chemistry models implemented in
+different toolkits and chemical software platforms. An example is the
+count of aromatic carbons - which is dependent on the aromaticity
+model (of which there are several) employed by the implementation. As
+a result, while descriptors calculated using a given toolkit are
+reproducible, this is only guaranteed within that \emph{specific
+  version} of the toolkit. The same algorithm may give different
+results using another cheminformatics toolkit.
 
-By definition, when the algorithm is applied to an incorrect chemical
-structure representation, the results is an incorrect molecular descriptor
-value. Cannot reliably say if an user-specified representation is correct
-or not by merely "looking" at it. Will need to apply a rigorous verification
-procedure. For example, suppose SMILES chemical structure representation.
-There exist different variations of SMILES, some of which make aromaticy
-transparent by using different atom and bond symbols (ie. lowercase letter "c" 
-and/or carbons connected by ":" bonds). Therefore, simple analysis of SMILES
-using simple text analysis functions won't suffice, and it has to be parsed 
-and reconstructed into more sophisticated chemical graph. Even then it is
-possible to run into trouble, because the ring detection and ring aromaticity
-assignment can be performed following different algorithms.
+\marginnote{This paragraph seems to digress a little and doesn't
+  really focus on the issue at hand}By definition, when the algorithm
+is applied to an incorrect chemical structure representation, the
+results is an incorrect molecular descriptor value. Cannot reliably
+say if an user-specified representation is correct or not by merely
+"looking" at it. Will need to apply a rigorous verification
+procedure. For example, suppose SMILES chemical structure
+representation.  There exist different variations of SMILES, some of
+which make aromaticy transparent by using different atom and bond
+symbols (ie. lowercase letter "c" and/or carbons connected by ":"
+bonds). Therefore, simple analysis of SMILES using simple text
+analysis functions won't suffice, and it has to be parsed and
+reconstructed into more sophisticated chemical graph. Even then it is
+possible to run into trouble, because the ring detection and ring
+aromaticity assignment can be performed following different
+algorithms.
 
-When "interfacing" QSAR models with actual end-users then it is necessary
-to specify supported input chemical structure representations. Most likely,
-actual chemical databases contain chemical compounds in data formats that
-cannot be fed \emph{directly} to the molecular descriptor calculation
-algorithm. For example, when testing with new chemical compounds then user
-input may originate from graphical drawing board (eg. JMol applet [ref?] or 
-J(S)ME Java(Script) Molecular Editor applet [ref?]) or be a systematic
-name. The desirable property of a QSAR predictive solution would be to
-recognize and automatically convert between different chemical structure
-representations.
+\marginnote{Is it really the case that the structure representation is
+  the issue? Shouldn't any decent standardization tool transform multiple
+  input forms to a single canonical form?}Due to these issues,
+providing a ``complete'' QSAR models to an end-user requires that we
+specify the supported input chemical structure representations. Most
+likely, actual chemical databases contain chemical compounds in data
+formats that cannot be fed \emph{directly} to the molecular descriptor
+calculation algorithm. For example, when testing with new chemical
+compounds then user input may originate from graphical drawing board
+(eg. JMol applet [ref?] or J(S)ME Java(Script) Molecular Editor applet
+[ref?]) or be a systematic name. The desirable property of a QSAR
+predictive solution would be to recognize and automatically convert
+between different chemical structure representations.
 
 Unlike model training algorithm, the molecular descriptor calculation
 algorithm does not have intermediary reusable states. From the practical
 point of view, can be only reused by providing the complete algorithm in 
 the application code form.
 
-There have been attempts to "simplify" the systematizing and communicating 
-algorithms using the ontology approach. The earliest work is the Blue Obelisk
-Descriptor Ontology [ref?], which has been now superseded by the Chemical 
-Information (CHEMINF) Ontology [ref?]. Unfortunately, not much adoption, 
-because the vocabulary of real-life algorithms is way beyond the standardized
-vocabularies, and the lack of competing implementations. An ontology that
-has been crafted following CDK data structures and concepts is unlikely to
-be relevant and useful for other descriptor calculation software. In other
-words, if there is an one-to-one correspondence between ontology identifiers
-and CDK implementation classes, then it may be a better idea to give those
-CDK class names directly, and avoid the intermediary layers of "ontology 
-identifiers" altogether.
+There have been attempts to "simplify" the systematizing and
+communicating algorithms using the ontology approach. The earliest
+work is the Blue Obelisk Descriptor Ontology \cite{Guha:2006ac}, which
+has been now superseded by the Chemical Information (CHEMINF) Ontology
+\cite{Hastings:2011rf}.
 
-The futility of formalizing algorithms using the ontology approach is
-well demonstrated by the "parametrization problem". The behaviour of most
-algorithms can be tweaked by adjusting a set of control variables. For 
-example, when performing the analysis of 3D molecular shapes, finding the 
-optimum between accuracy and speed (eg. mesh size). A different
-parametrization will likely result in different calculated molecular
-descriptor values. Cannot have repeatable nor less reproducible science
-when the exact parametrization is unavailable. The only way to address
-this problem would be to extend the algorithm ontology with this extra
-information, but that would limit its relevancy and usefulness even more.
+\marginnote{Probably not useful to speak negatively (at least in this
+  article). Maybe drop this paragraph or just simplify
+  it}Unfortunately, not much adoption, because the vocabulary of
+real-life algorithms is way beyond the standardized vocabularies, and
+the lack of competing implementations. An ontology that has been
+crafted following CDK data structures and concepts is unlikely to be
+relevant and useful for other descriptor calculation software. In
+other words, if there is an one-to-one correspondence between ontology
+identifiers and CDK implementation classes, then it may be a better
+idea to give those CDK class names directly, and avoid the
+intermediary layers of "ontology identifiers" altogether.
 
-Another source of "variance" for molecular descriptor algorithms are 
-programming errors. It is possible that newer versions of the same software 
-could yield different results than older versions, because the algorithm
-has been slightly changed (or reparameterized) in some point in time.
+The challenges of formalizing algorithm descriptions using ontologies
+is well demonstrated by the ``parametrization problem''.  That is, the
+behaviour of most algorithms can be tweaked by adjusting a set of
+control variables or parameters. For example, one approach to 3D
+analysis of molecular shape requires one to specify a mesh
+size. Different values represent trade-offs between speed and accuracy
+and will lead to different descriptor values. Thus a full
+specification of an algorithm must also include the details of the
+parametrization. Encoding this level of detail in an ontology may not
+be appropriate.
+
+\marginnote{This is always a possibility - not sure whether its worth
+  mentioning}Another source of "variance" for molecular descriptor
+algorithms are programming errors. It is possible that newer versions
+of the same software could yield different results than older
+versions, because the algorithm has been slightly changed (or
+reparameterized) in some point in time.
 
 \section{Methods}
 \label{sec:methods}
@@ -397,8 +430,9 @@ has been slightly changed (or reparameterized) in some point in time.
 \label{sec:model-development}
 
 For this study we developed models in R 3.1 [REF] with descriptors
-generated using the CDK [REF] via the rcdk [REF] package. As exemplars
-we considered two datasets. XXX Describe the datasets.
+generated using the CDK \cite{Steinbeck:2003bh} via the rcdk
+\cite{Guha:2007aa} package. As exemplars we considered two
+datasets. XXX Describe the datasets.
 
 Next we developed a linear regression (or classification) and random
 forest  model  for each dataset. Using the pmml package [REF] we
@@ -416,6 +450,6 @@ serialized the models to PMML.
 
 
 
-
+\bibliography{paper}
 
 \end{document}
