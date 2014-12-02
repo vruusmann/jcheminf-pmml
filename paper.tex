@@ -441,9 +441,66 @@ serialized the models to PMML.
 \subsection{Model Deployment}
 \label{sec:model-deployment}
 
-
 \section{Discussion}
 \label{sec:discussion}
+
+Putting the previous and current work of the ONS team in perspective.
+The analysis could be based on the Melting Point dataset \url{http://onswebservices.wikispaces.com/meltingpoint}, which has practical 
+applications in designing better laboratory experiments.
+
+Evolution of the Melting Point dataset \url{http://onschallenge.wikispaces.com/Open+Melting+Point+Datasets}. Over time, has been analyzed as a complete set 
+(over 10'000 chemical compounds) and chemical class-based subsets (few
+hundred to few thousand compounds).
+
+The preferred model training algorithm for the complete set has been
+Random Forest. RF model is technically quite challenging to work with,
+because it is typically several orders of magnite larger than other
+common algorithms (eg. linear regression, SVM regression).
+
+Notable accomplishments:
+\begin{itemize}
+  \item MPM001 \url{http://onschallenge.wikispaces.com/MeltingPointModel001}.
+  Analysis and visualization of the chemical space using PCA, exploratory 
+  modeling using RF vs. linear regression
+  \item MPM002 \url{http://onschallenge.wikispaces.com/MeltingPointModel002}.
+  Web service version of MPM001. PHP for frontend, R and CDK for backend.
+  \marginnote{This looks like a rather tricky setup. Intended to be a single
+  central installation that serves all interested parties?}
+  \item MPM004 \url{http://onschallenge.wikispaces.com/MeltingPointModel004}.
+  Using the high-quality subset (2706) of the complete set. The resulting RF
+  model is available for download in R native RDS data format.
+  \item MPM009 \url{http://onschallenge.wikispaces.com/MeltingPointModel009}
+  QsarDB approach. The model is exported in RDS data format instead of PMML
+  data format, but the resulting QDB archive contains CDK descriptor calculation
+  information, which makes it executable by anyone using open source QsarDB 
+  tools. Internally, the RF model data structure was converted to a generic
+  wrapper object that exposed "public API" in the form of methods getPropertyId
+  getDescriptorIds and evaluate(Map of descriptor valuess).
+  \item MPM011 \url{http://onschallenge.wikispaces.com/MeltingPointModel011}.
+  OpenBabel approach. Molecular descriptors are calculated using OpenBabel
+  software as fragment counts. The model is exported in OpenBabel data format
+  for fragment contribution models \url{http://onschallenge.wikispaces.com/file/view/mpC.txt/350881856/mpC.txt}. This model can be applied to any chemical structure
+  representation that OpenBabel supports in input. This fragment contribution 
+  table is the final model representation. The OpenBabel approach is applicable
+  only to linear models (ie. counts of atoms/bonds/fragments multiplied by their
+  contributions). Cannot do more complex model types, unless the developers
+  of the OpenBabel project decide to work on it more.
+  \item MPM012 \url{http://onschallenge.wikispaces.com/MeltingPointModel012}.
+  QSAR.io approach (ONS workbook is not completed). The RF model is represented
+  in PMML data format, and integrated with CDK descriptors over Java user-defined
+  functions (UDFs). This will make it possible to evaluate such QSAR models
+  in all Java environments, including real-time scoring, in-database scoring
+  and batch scoring.
+\end{itemize}
+
+ONS Melting Point models assume 2D chemical structure representation as input
+(eg. SMILES, InChI). It is possible to use 3D representations that are recognized
+by CDK and can be converted to the same in-memory IChemObject form (eg. Sdf).
+At later stages, ONS team began collaborating with ChemSpider and added support
+for ChemSpider Identifiers (CSIDs). When given a CSID as input, then an ONS
+webservice first resolves to an appropriate 2D representation by performing a
+query against ChemSpider database. In the future, would be equally useful to 
+support IUPAC systematic names. 
 
 \subsection{PMML Supports Open Science}
 \label{sec:pmml-supports-open}
