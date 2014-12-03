@@ -492,6 +492,41 @@ Completeness of QSAR predictive solutions:
   50+ CDK descriptor values.
 \end{enumerate}
 
+\subsection{Fitness of PMML for QSAR purposes}
+Four major types of models:
+\begin{itemize}
+  \item Regression. Predicts continuous dependent value.
+  Supervised method.
+  \item Classification. Predicts categorical (unordered labels) or ordinal 
+  (ordered labels) dependent values. Two categories (binomial response) or
+  multiple categories (multinomial response). Supervised method.
+  \item Clustering. Grouping instances by similarity. Unsupervised method.
+  \item Association rules. Predicting the next instance in sequence.
+  Supervised method.
+\end{itemize}
+
+Historically, research stated around regression applications in physical organic
+chemistry such as predicting reaction rates and equilibrium constants (eg. Hammett 
+equation) using linear relationships. Later expanded into more "fuzzy" 
+application areas such as predicting biological activities (eg. Hansch equation)
+where the relationship between the dependent variable and independent variables
+is often non-linear or otherwise poorly understood (requires \textit{a posteriori} model 
+interpretation). Classification models can be often regarded as simplifications
+of regression models, where the range of a continuous response variable has been
+discretized ("binned") into small number of categories. For example, for regulatory
+purposes, it may be better to translate the predicted effect concentration based
+on safety thresholds to "not hazardous", "moderately hazardous", "highly hazardous"
+class labels. Of course, there are also many true classification problems, where
+the goal is to assign the chemical compound to one predefined chemical category.
+For example, classifying a toxicant by its structural features as "chemically inert",
+"electrophile" or "nucleophile" (without regard to its effective concentration).
+Such true classification models lead to clustering models, where the chemical space
+is dissected to subregions based on similarity measures, either structural features
+or molecular descriptor values. For example, dissecting a two-dimensional chemical
+space into four quadrants. Clustering models are the basis for read-across methods,
+where the characteristics of a new chemical compound are predicted from the 
+characteristics of its closest analogues.
+
 \subsection{Model Development}
 \label{sec:model-development}
 
