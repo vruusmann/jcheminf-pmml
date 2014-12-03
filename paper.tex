@@ -258,6 +258,33 @@ It is possible to distinguish between three levels:
   for more optimizations and much speedier execution. 
 \end{itemize}
 
+Excerpt from a Random Forest model in PMML pseudocode representation:
+\begin{verbatim}
+<TreeModel splitCharacteristic="binarySplit">
+  <Node id="1">
+    <True/>
+    <Node id="2">
+      <SimplePredicate field="logP" operator="lessOrEqual" value="3.5"/>
+      <!-- More child nodes -->
+    </Node>
+    <Node id="3">
+      <SimplePredicate field="logP" operator="greaterThan" value="3.5"/>
+      <!-- More child nodes -->
+    </Node>
+  </Node>
+</TreeModel>
+\end{verbatim}
+
+The same in Java application code (using JPMML-Evaluator API) representation:
+\begin{verbatim}
+FieldValue logP = ExpressionUtil.evaluate(new FieldName("logP"), context);
+if(logP.compareToString("3.5") <= 0){ // Node 2
+  // More child if-else statements
+} else { // Node 3
+  // More child if-else statements
+}
+\end{verbatim}
+
 Binary serialization mechanisms are usually more performant and 
 compact compared to text based methods. The primary disadvantage is
 that they cannot be manually inspected and require special tools to
