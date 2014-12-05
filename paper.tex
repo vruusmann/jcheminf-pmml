@@ -527,6 +527,59 @@ space into four quadrants. Clustering models are the basis for read-across metho
 where the characteristics of a new chemical compound are predicted from the 
 characteristics of its closest analogues.
 
+\subsection{Common mathematical relationships in QSAR}
+Three major types:
+\begin{itemize}
+  \item Standalone. The output is computed by applying a function to the input:
+  \begin{equation}
+    output = f(input)
+  \end{equation}
+  Most relationships can be efficiently represented using top-level PMML model
+  elements (15 elements as of PMML schema version 4.2). Some relationships (eg. PCA,
+  PLS) are not distinctive enough to warrant dedicated PMML model elements.
+  They are represented by combining some analogous PMML model element with appropriate 
+  data pre- or post-processing transformations. For example, a PLS model can be
+  represented by a combination of a RegressionModel element with NormContinuous 
+  data transformation elements (ie. one for each regressor).
+  \item Model aggregation. The final output is computed by applying some aggregation
+  function over a collection of interim outputs:
+  \begin{equation}
+    output = f\_aggregate(f\_1(input), f\_2(input), ..)
+  \end{equation}
+  All primary functions must be of the same type. Most common aggregation functions 
+  are the average and weighted average for regression, and the majority vote and weighted 
+  majority vote for classification and clustering. Starting from PMML schema version
+  4.0, such model aggregates can be very efficiently represented using the segmentation
+  approach (eg. a MiningModel element with a Segmentation child element).
+  Model aggregation encompasses wide range of boosting and bagging models [ref] that
+  have been gaining ground since mid 2000s and often demonstrate superior predictive
+  capabilities. For example, the Random Forest model does not warrant a dedicated PMML
+  element, because it can be completely represented as an aggregation of any number
+  (typically, in the hundreds) of decision tree models.
+  Main QSAR application is related to consensus modeling. Aggregated models can be 
+  of same type (eg. a collection of linear regression models) or different types 
+  (eg. a mix of linear regression, neural network regression and SVM regression models).
+  Such consensus models have 
+  \item Model chain. The final output is computed by applying a function to the
+  the interim output:
+  \begin{equation}
+    output = f\_2(f\_1(input))
+  \end{equation}
+  Primary functions can be of any type. Typically, a classification model chained to
+  several class-based regression models. Again, represented using the segmentation
+  approach. The output of one model may need some transformation in order to be
+  usable as input for the subsequent model.
+  Main QSAR application is mechanistic models. For example, consider the a workflow 
+  for predicting the acute aquatic toxicity of small organic molecules. First, the
+  incoming chemical compound is assigned to some class based on its predicted mechanism
+  of toxic action. Second, the the class label is used to select the corresponding
+  regression model for predicting the effective concentration (eg. pLC50, pIGC50).
+  PMML provides facilities for encapsulating model chains as a single predictive 
+  solution. From end-user perspective, much more convenient to obtain the final output
+  in single function call than to emulate it manually by evaluating multiple 
+  standalone models.
+\end{itemize}
+
 \subsection{Model Development}
 \label{sec:model-development}
 
